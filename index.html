@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/index.css">
+    <meta name="description" content="Currículo digital de Francisco Araujo, estudante de Engenharia de Software na Anhanguera, Londrina.">
+    <meta name="keywords" content="currículo, desenvolvedor, engenharia de software, francisco araujo, londrina">
+    <link rel="stylesheet" href="index.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <title>Meu Portfólio</title>
+    <title>Currículo Digital - Francisco Araujo</title>
 </head>
 <body>
+    <canvas id="particles"></canvas>
     <header class="portfolio-header">
-        <div class="btn-contato">
-            <a href="#contato">
-                <button>Contato</button>
-            </a>
-        </div>
+        <nav>
+            <ul>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#especialidades">Especialidades</a></li>
+                <li><a href="#projetos">Projetos</a></li>
+                <li><a href="#tecnologias">Tecnologias</a></li>
+                <li><a href="#certificacoes">Certificações</a></li>
+                <li><a href="#contato">Contato</a></li>
+            </ul>
+        </nav>
     </header>
 
     <main class="portfolio-main">
@@ -23,10 +31,11 @@
             <div class="about-text">
                 <h1>Olá, sou <span id="typing-name"></span></h1>
                 <p>
-                    Sou um desenvolvedor apaixonado por criar experiências digitais incríveis. 
-                    Com habilidades em frontend e backend, transformo ideias em realidade, entregando 
-                    soluções personalizadas para cada projeto. Vamos criar algo extraordinário juntos?
+                    Sou Francisco Araujo, estudante de Engenharia de Software na Anhanguera (Campus Jardim Piza, Londrina). 
+                    Apaixonado por tecnologia, desenvolvo soluções digitais modernas com foco em frontend, backend e integrações. 
+                    Vamos criar algo incrível juntos?
                 </p>
+                <a href="#contato" class="cta-button">Entre em Contato</a>
             </div>
         </section>
 
@@ -34,16 +43,16 @@
             <h2>Especialidades</h2>
             <div class="cards">
                 <div class="card">
-                    <h3>Desenvolvimento Web</h3>
-                    <p>Criação de sites responsivos e modernos, com foco em performance e usabilidade.</p>
+                    <h3>Desenvolvimento Full-Stack</h3>
+                    <p>Criação de aplicações web completas, do frontend ao backend, com foco em performance e escalabilidade.</p>
                 </div>
                 <div class="card">
-                    <h3>Soluções Backend</h3>
-                    <p>Integrações robustas com APIs e banco de dados para aplicações completas.</p>
+                    <h3>Integrações de Pagamento</h3>
+                    <p>Implementação de soluções de pagamento como Mercado Pago para e-commerce e plataformas digitais.</p>
                 </div>
                 <div class="card">
                     <h3>Design de Interface</h3>
-                    <p>Protótipos e layouts atraentes para interfaces funcionais e intuitivas.</p>
+                    <p>Prototipagem e criação de interfaces intuitivas e responsivas, com foco na experiência do usuário.</p>
                 </div>
             </div>
         </section>
@@ -53,19 +62,19 @@
             <div class="cards">
                 <div class="card">
                     <h3>Projeto 1</h3>
-                    <iframe src="https://abrastandard.org/" width="100%" height="300px" style="border: none;"></iframe>
+                    <iframe src="https://abrastandard.org/" width="100%" height="300px" style="border: none;" title="Demonstração do site Abra Standard"></iframe>
                 </div>
                 <div class="card">
                     <h3>Projeto 2</h3>
-                    <iframe src="https://www.abraenergia.com.br/" width="100%" height="300px" style="border: none;"></iframe>
+                    <iframe src="https://www.abraenergia.com.br/" width="100%" height="300px" style="border: none;" title="Demonstração do site Abra Energia"></iframe>
                 </div>
                 <div class="card">
                     <h3>Projeto 3</h3>
-                    <iframe src="https://alphabloc.com.br/" width="100%" height="300px" style="border: none;"></iframe>
+                    <iframe src="https://terabyt.netlify.app/" width="100%" height="300px" style="border: none;" title="Demonstração terabyt"></iframe>
                 </div>
                 <div class="card">
                     <h3>Projeto 4</h3>
-                    <iframe src="https://respirasustentabilidade.com.br/" width="100%" height="300px" style="border: none;"></iframe>
+                    <iframe src="https://respirasustentabilidade.com.br/" width="100%" height="300px" style="border: none;" title="Demonstração do site Respira Sustentabilidade"></iframe>
                 </div>
             </div>
         </section>
@@ -82,12 +91,24 @@
                     <p>Node.js</p>
                 </div>
                 <div class="tech-card">
-                    <img src="/img/serverless.png" alt="Serverless Framework">
-                    <p>Serverless</p>
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express">
+                    <p>Express</p>
                 </div>
                 <div class="tech-card">
-                    <img src="/img/aws.png" alt="AWS">
-                    <p>AWS</p>
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+                    <p>Python</p>
+                </div>
+                <div class="tech-card">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React">
+                    <p>React</p>
+                </div>
+                <div class="tech-card">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+                    <p>Git</p>
+                </div>
+                <div class="tech-card">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
+                    <p>GitHub</p>
                 </div>
                 <div class="tech-card">
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
@@ -101,19 +122,64 @@
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3">
                     <p>CSS3</p>
                 </div>
+                <div class="tech-card">
+                    <img src="/img/aws.png" alt="AWS">
+                    <p>AWS</p>
+                </div>
             </div>
         </section>
-        
+
+        <section class="portfolio-section" id="certificacoes">
+            <h2>Certificações</h2>
+            <div class="cert-carousel">
+                <div class="cert-card">
+                    <a href="img/Curso - MySQL_page-0001.jpg" class="cert-link" aria-label="Ver certificado de MySQL">
+                        <img src="img/Curso - MySQL_page-0001.jpg" alt="Certificado de MySQL - Curso em Vídeo">
+                    </a>
+                    <p>Certificado de MySQL</p>
+                </div>
+                <div class="cert-card">
+                    <a href="img/Francisco-Araujo-Javascript-40-Horas-Certificado-Curso-em-Video_page-0001.jpg" class="cert-link" aria-label="Ver certificado de JavaScript">
+                        <img src="img/Francisco-Araujo-Javascript-40-Horas-Certificado-Curso-em-Video_page-0001.jpg" alt="Certificado de JavaScript 40 Horas - Curso em Vídeo">
+                    </a>
+                    <p>Certificado de JavaScript</p>
+                </div>
+                <div class="cert-card">
+                    <a href="img/backend - Nodejs_page-0001.jpg" class="cert-link" aria-label="Ver certificado de Node.js">
+                        <img src="img/backend - Nodejs_page-0001.jpg" alt="Certificado de Backend com Node.js">
+                    </a>
+                    <p>Certificado de Node.js</p>
+                </div>
+                <div class="cert-card">
+                    <a href="img/INGLÊS INCREMENTANDO O VOCABULÁRIO (DEFINITIVO)_page-0001.jpg" class="cert-link" aria-label="Ver certificado de Inglês">
+                        <img src="img/INGLÊS INCREMENTANDO O VOCABULÁRIO (DEFINITIVO)_page-0001.jpg" alt="Certificado de Inglês - Incrementando o Vocabulário">
+                    </a>
+                    <p>Certificado de Inglês</p>
+                </div>
+            </div>
+        </section>
 
         <section class="portfolio-section" id="contato">
             <h2>Contato</h2>
-            <p>Interessado em trabalhar comigo? Entre em contato através do botão abaixo!</p>
-            <a href="#">
-                <button class="contact-button">Entre em contato</button>
-            </a>
+            <p>Interessado em colaborar? Entre em contato comigo!</p>
+            <p><strong>E-mail</strong>: <a href="mailto:franciscoaraujodev@gmail.com">franciscoaraujodev@gmail.com</a></p>
+            <p><strong>Telefone</strong>: <a href="tel:+5543988331584">(43) 98833-1584</a></p>
+            <a href="mailto:franciscoaraujodev@gmail.com" class="contact-button" aria-label="Enviar e-mail para Francisco Araujo">Enviar E-mail</a>
         </section>
-
     </main>
+
+    <div class="modal" id="cert-modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-content">
+            <span class="modal-close" aria-label="Fechar modal">×</span>
+            <h3 id="modal-title">Certificado</h3>
+            <img id="modal-image" src="" alt="Certificado em visualização">
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Francisco Araujo. Todos os direitos reservados.</p>
+    </footer>
+
     <script src="index.js"></script>
 </body>
 </html>
