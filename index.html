@@ -1,189 +1,734 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Currículo digital de Francisco Araujo, estudante de Engenharia de Software na Anhanguera, Londrina.">
-    <meta name="keywords" content="currículo, desenvolvedor, engenharia de software, francisco araujo, londrina">
-    <link rel="stylesheet" href="index.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <title>Currículo Digital - Francisco Araujo</title>
+    <title>Francisco Araújo - Desenvolvedor Full Stack</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #fafafa;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            opacity: 0.15;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 0;
+        }
+
+        .section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+            letter-spacing: -0.02em;
+        }
+
+        .hero h2 {
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .contact-info {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 3rem;
+        }
+
+        .contact-item {
+            padding: 0.75rem 1.5rem;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+            color: #4b5563;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .contact-item:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+            color: #1a1a1a;
+        }
+
+        .section-content {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: #1a1a1a;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .about-text {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            text-align: center;
+            color: #4b5563;
+            max-width: 700px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .skill-card {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+
+        .skill-card:hover {
+            border-color: #d1d5db;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .skill-card h3 {
+            color: #1a1a1a;
+            margin-bottom: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .skill-card p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .project-card {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+
+        .project-card:hover {
+            border-color: #d1d5db;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .project-card h3 {
+            color: #1a1a1a;
+            margin-bottom: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .project-card p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .project-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: #1a1a1a;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .project-link:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        .experience-section {
+            background: #f9fafb;
+        }
+
+        .experience-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .experience-item {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .experience-item h3 {
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .experience-item h4 {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .experience-item p {
+            color: #4b5563;
+            margin-bottom: 1rem;
+        }
+
+        .experience-item ul {
+            padding-left: 1.5rem;
+            color: #6b7280;
+        }
+
+        .experience-item ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-dots {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d1d5db;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-dot.active {
+            background: #1a1a1a;
+            transform: scale(1.25);
+        }
+
+        .nav-dot:hover {
+            background: #6b7280;
+            transform: scale(1.15);
+        }
+
+        .contact-section {
+            background: #f9fafb;
+        }
+
+        .contact-card {
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact-card h3 {
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .contact-card p {
+            color: #6b7280;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .contact-grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .contact-grid .contact-item {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+                line-height: 1.2;
+            }
+            
+            .hero h2 {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .section h2 {
+                font-size: 1.75rem;
+                margin-bottom: 2rem;
+            }
+            
+            .section {
+                padding: 2rem 1rem;
+                min-height: auto;
+            }
+            
+            .nav-dots {
+                display: none;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+            }
+
+            .contact-item {
+                width: 100%;
+                max-width: 280px;
+                text-align: center;
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+
+            .about-text {
+                padding: 1.5rem;
+                font-size: 1rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .skill-card {
+                padding: 1.5rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .project-card {
+                padding: 1.5rem;
+            }
+
+            .experience-item {
+                padding: 1.5rem;
+            }
+
+            .contact-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .contact-grid {
+                gap: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+            
+            .section {
+                padding: 1.5rem 0.75rem;
+            }
+
+            .contact-item {
+                padding: 0.875rem;
+                font-size: 0.85rem;
+            }
+
+            .about-text {
+                padding: 1.25rem;
+                font-size: 0.95rem;
+            }
+
+            .skill-card, .project-card, .experience-item {
+                padding: 1.25rem;
+            }
+
+            .contact-card {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+        /* Smooth animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Improved button styles for mobile */
+        .contact-item {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .project-link {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
 </head>
 <body>
-    <canvas id="particles"></canvas>
-    <header class="portfolio-header">
-        <nav>
-            <ul>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#especialidades">Especialidades</a></li>
-                <li><a href="#projetos">Projetos</a></li>
-                <li><a href="#tecnologias">Tecnologias</a></li>
-                <li><a href="#certificacoes">Certificações</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main class="portfolio-main">
-        <section class="about" id="sobre">
-            <div class="about-text">
-                <h1>Olá, sou <span id="typing-name"></span></h1>
-                <p>
-                    Sou Francisco Araujo, estudante de Engenharia de Software na Anhanguera (Campus Jardim Piza, Londrina). 
-                    Apaixonado por tecnologia, desenvolvo soluções digitais modernas com foco em frontend, backend e integrações. 
-                    Vamos criar algo incrível juntos?
-                </p>
-                <a href="#contato" class="cta-button">Entre em Contato</a>
-            </div>
-        </section>
-
-        <section class="portfolio-section" id="especialidades">
-            <h2>Especialidades</h2>
-            <div class="cards">
-                <div class="card">
-                    <h3>Desenvolvimento Full-Stack</h3>
-                    <p>Criação de aplicações web completas, do frontend ao backend, com foco em performance e escalabilidade.</p>
-                </div>
-                <div class="card">
-                    <h3>Integrações de Pagamento</h3>
-                    <p>Implementação de soluções de pagamento como Mercado Pago para e-commerce e plataformas digitais.</p>
-                </div>
-                <div class="card">
-                    <h3>Design de Interface</h3>
-                    <p>Prototipagem e criação de interfaces intuitivas e responsivas, com foco na experiência do usuário.</p>
+    <div id="canvas-container"></div>
+    
+    <div class="content">
+        <!-- Hero Section -->
+        <section class="section hero" data-section="0">
+            <div class="section-content">
+                <h1>Francisco Cauã Kennedy<br>Araújo Bezerra</h1>
+                <h2>Desenvolvedor Full Stack | Engenharia de Software</h2>
+                <div class="contact-info">
+                    <a href="https://wa.me/5543988331584" class="contact-item" target="_blank">📱 WhatsApp</a>
+                    <a href="mailto:franciscoaraujo.dev@gmail.com" class="contact-item">✉️ Email</a>
+                    <a href="https://github.com/Francisco-Araujoo" class="contact-item" target="_blank">🔗 GitHub</a>
+                    <a href="https://www.linkedin.com/in/francisco-araujo-873754314/" class="contact-item" target="_blank">💼 LinkedIn</a>
                 </div>
             </div>
         </section>
 
-        <section class="portfolio-section" id="projetos">
-            <h2>Projetos</h2>
-            <div class="cards">
-                <div class="card">
-                    <h3>Projeto 1</h3>
-                    <iframe src="https://abrastandard.org/" width="100%" height="300px" style="border: none;" title="Demonstração do site Abra Standard"></iframe>
-                </div>
-                <div class="card">
-                    <h3>Projeto 2</h3>
-                    <iframe src="https://www.abraenergia.com.br/" width="100%" height="300px" style="border: none;" title="Demonstração do site Abra Energia"></iframe>
-                </div>
-                <div class="card">
-                    <h3>Projeto 3</h3>
-                    <iframe src="https://primeacai.netlify.app" width="100%" height="300px" style="border: none;" title="Demonstração terabyt"></iframe>
-                </div>
-                <div class="card">
-                    <h3>Projeto 4</h3>
-                    <iframe src="https://respirasustentabilidade.com.br/" width="100%" height="300px" style="border: none;" title="Demonstração do site Respira Sustentabilidade"></iframe>
-                </div>
-                <!-- <div class="card">
-                    <h3>Projeto 5</h3>
-                    <iframe src="https://evolvetech.netlify.app" width="100%" height="300px" style="border: none;" title="Demonstração do site Respira Sustentabilidade"></iframe>
-                </div> -->
-            </div>
-        </section>
-
-        <section class="portfolio-section" id="tecnologias">
-            <h2>Tecnologias</h2>
-            <div class="tech-container">
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
-                    <p>JavaScript</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js">
-                    <p>Node.js</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express">
-                    <p>Express</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
-                    <p>Python</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" alt="React">
-                    <p>React</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
-                    <p>Git</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
-                    <p>GitHub</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
-                    <p>MySQL</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5">
-                    <p>HTML5</p>
-                </div>
-                <div class="tech-card">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3">
-                    <p>CSS3</p>
-                </div>
-                <div class="tech-card">
-                    <img src="/img/aws.png" alt="AWS">
-                    <p>AWS</p>
+        <!-- About Section -->
+        <section class="section" data-section="1">
+            <div class="section-content">
+                <h2>Sobre Mim</h2>
+                <div class="about-text fade-in">
+                    <p>
+                        Desenvolvedor Full Stack, atualmente cursando 
+                        <strong>Engenharia de Software</strong> na Anhanguera (3º Semestre). 
+                        Tenho total disposição e tempo para aprender e contribuir com equipes, 
+                        com foco em crescimento profissional e desenvolvimento de soluções inovadoras.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <section class="portfolio-section" id="certificacoes">
-            <h2>Certificações</h2>
-            <div class="cert-carousel">
-                <div class="cert-card">
-                    <a href="img/Curso - MySQL_page-0001.jpg" class="cert-link" aria-label="Ver certificado de MySQL">
-                        <img src="img/Curso - MySQL_page-0001.jpg" alt="Certificado de MySQL - Curso em Vídeo">
-                    </a>
-                    <p>Certificado de MySQL</p>
-                </div>
-                <div class="cert-card">
-                    <a href="img/Francisco-Araujo-Javascript-40-Horas-Certificado-Curso-em-Video_page-0001.jpg" class="cert-link" aria-label="Ver certificado de JavaScript">
-                        <img src="img/Francisco-Araujo-Javascript-40-Horas-Certificado-Curso-em-Video_page-0001.jpg" alt="Certificado de JavaScript 40 Horas - Curso em Vídeo">
-                    </a>
-                    <p>Certificado de JavaScript</p>
-                </div>
-                <div class="cert-card">
-                    <a href="img/backend - Nodejs_page-0001.jpg" class="cert-link" aria-label="Ver certificado de Node.js">
-                        <img src="img/backend - Nodejs_page-0001.jpg" alt="Certificado de Backend com Node.js">
-                    </a>
-                    <p>Certificado de Node.js</p>
-                </div>
-                <div class="cert-card">
-                    <a href="img/INGLÊS INCREMENTANDO O VOCABULÁRIO (DEFINITIVO)_page-0001.jpg" class="cert-link" aria-label="Ver certificado de Inglês">
-                        <img src="img/INGLÊS INCREMENTANDO O VOCABULÁRIO (DEFINITIVO)_page-0001.jpg" alt="Certificado de Inglês - Incrementando o Vocabulário">
-                    </a>
-                    <p>Certificado de Inglês</p>
+        <!-- Skills Section -->
+        <section class="section" data-section="2">
+            <div class="section-content">
+                <h2>Habilidades Técnicas</h2>
+                <div class="skills-grid">
+                    <div class="skill-card fade-in">
+                        <h3>Frontend</h3>
+                        <p>HTML5, CSS3, JavaScript, Desenvolvimento responsivo e interfaces modernas</p>
+                    </div>
+                    <div class="skill-card fade-in">
+                        <h3>Backend</h3>
+                        <p>Node.js, Express.js, APIs RESTful, Serverless Framework</p>
+                    </div>
+                    <div class="skill-card fade-in">
+                        <h3>Banco de Dados</h3>
+                        <p>MySQL, Gerenciamento e otimização de bases de dados</p>
+                    </div>
+                    <div class="skill-card fade-in">
+                        <h3>Cloud & DevOps</h3>
+                        <p>AWS, Serverless Framework, Infraestrutura em nuvem</p>
+                    </div>
+                    <div class="skill-card fade-in">
+                        <h3>Java Ecosystem</h3>
+                        <p>Java (Intermediário), Spring Boot (Básico), Hibernate (Básico), Maven</p>
+                    </div>
+                    <div class="skill-card fade-in">
+                        <h3>Ferramentas</h3>
+                        <p>Git/GitHub, Postman, Testes de API, Inglês Intermediário</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="portfolio-section" id="contato">
-            <h2>Contato</h2>
-            <p>Interessado em colaborar? Entre em contato comigo!</p>
-            <p><strong>E-mail</strong>: <a href="mailto:franciscoaraujodev@gmail.com">franciscoaraujodev@gmail.com</a></p>
-            <p><strong>Telefone</strong>: <a href="tel:+5543988331584">(43) 98833-1584</a></p>
-            <a href="mailto:franciscoaraujodev@gmail.com" class="contact-button" aria-label="Enviar e-mail para Francisco Araujo">Enviar E-mail</a>
+        <!-- Experience Section -->
+        <section class="section experience-section" data-section="3">
+            <div class="section-content">
+                <h2>Experiência Profissional</h2>
+                <div class="experience-timeline">
+                    <div class="experience-item fade-in">
+                        <h3>Desenvolvedor Full Stack</h3>
+                        <h4>Múltiplas Empresas - Atual</h4>
+                        <p><strong>Empresas:</strong> Abra Energia, Abra Standard, Respira Sustentabilidade, Vem Ganhar</p>
+                        <ul>
+                            <li>Desenvolvimento completo das plataformas das empresas (Front-End e Back-End)</li>
+                            <li>Integração com APIs e testes utilizando Postman</li>
+                            <li>Utilização de Node.js, Express, MySQL, Serverless Framework e AWS</li>
+                            <li>Gerenciamento de banco de dados e infraestrutura em nuvem</li>
+                        </ul>
+                    </div>
+                    <div class="experience-item fade-in">
+                        <h3>Colaborador em Projetos</h3>
+                        <h4>Evolve Tech Solutions</h4>
+                        <p>Apoio no desenvolvimento de soluções web e integrações com APIs, com foco em crescimento profissional dentro da empresa.</p>
+                    </div>
+                </div>
+            </div>
         </section>
-    </main>
 
-    <div class="modal" id="cert-modal" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
-        <div class="modal-content">
-            <span class="modal-close" aria-label="Fechar modal">×</span>
-            <h3 id="modal-title">Certificado</h3>
-            <img id="modal-image" src="" alt="Certificado em visualização">
-        </div>
+        <!-- Projects Section -->
+        <section class="section" data-section="4">
+            <div class="section-content">
+                <h2>Projetos Desenvolvidos</h2>
+                <div class="projects-grid">
+                    <div class="project-card fade-in">
+                        <h3>Respira Sustentabilidade</h3>
+                        <p>Plataforma focada em sustentabilidade e soluções ambientais. Desenvolvimento completo com integração de APIs e interface moderna.</p>
+                        <a href="https://respirasustentabilidade.com.br/" class="project-link" target="_blank">Visitar Site →</a>
+                    </div>
+                    <div class="project-card fade-in">
+                        <h3>Abra Standard</h3>
+                        <p>Plataforma de padronização e qualidade. Sistema completo com backend robusto e frontend responsivo.</p>
+                        <a href="https://abrastandard.org/" class="project-link" target="_blank">Visitar Site →</a>
+                    </div>
+                    <div class="project-card fade-in">
+                        <h3>Abra Energia</h3>
+                        <p>Sistema de gestão energética com funcionalidades avançadas. Desenvolvido com Node.js e AWS.</p>
+                        <a href="https://www.abraenergia.com.br/" class="project-link" target="_blank">Visitar Site →</a>
+                    </div>
+                    <div class="project-card fade-in">
+                        <h3>Evolve Tech Solutions</h3>
+                        <p>Portal corporativo da empresa de tecnologia. Interface moderna com foco na experiência do usuário.</p>
+                        <a href="https://www.evolvetechsolutions.com.br/" class="project-link" target="_blank">Visitar Site →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="section contact-section" data-section="5">
+            <div class="section-content">
+                <h2>Vamos Trabalhar Juntos?</h2>
+                <div class="contact-card fade-in">
+                    <h3>Entre em Contato</h3>
+                    <p>
+                        Estou sempre aberto a novas oportunidades e desafios. 
+                        Tenho total interesse em aprender e crescer junto à sua empresa!
+                    </p>
+                    <div class="contact-grid">
+                        <a href="https://wa.me/5543988331584" class="contact-item" target="_blank">
+                            <strong>WhatsApp:</strong> (43) 98833-1584
+                        </a>
+                        <a href="mailto:franciscoaraujo.dev@gmail.com" class="contact-item">
+                            <strong>Email:</strong> franciscoaraujo.dev@gmail.com
+                        </a>
+                        <a href="https://github.com/Francisco-Araujoo" class="contact-item" target="_blank">
+                            <strong>GitHub:</strong> Francisco-Araujoo
+                        </a>
+                        <a href="https://www.linkedin.com/in/francisco-araujo-873754314/" class="contact-item" target="_blank">
+                            <strong>LinkedIn:</strong> Francisco Araújo
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <footer>
-        <p>© 2025 Francisco Araujo. Todos os direitos reservados.</p>
-    </footer>
+    <!-- Navigation Dots -->
+    <div class="nav-dots">
+        <div class="nav-dot active" data-section="0"></div>
+        <div class="nav-dot" data-section="1"></div>
+        <div class="nav-dot" data-section="2"></div>
+        <div class="nav-dot" data-section="3"></div>
+        <div class="nav-dot" data-section="4"></div>
+        <div class="nav-dot" data-section="5"></div>
+    </div>
 
-    <script src="index.js"></script>
+    <script>
+        // Three.js Scene Setup (Simplified)
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Simple particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = window.innerWidth > 768 ? 100 : 50; // Menos partículas no mobile
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 50;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.8,
+            color: 10,
+            transparent: true,
+            opacity: 0.4
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 30;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            particlesMesh.rotation.x += 0.0005;
+            particlesMesh.rotation.y += 0.001;
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Smooth scrolling for navigation
+        const navDots = document.querySelectorAll('.nav-dot');
+        const sections = document.querySelectorAll('.section');
+
+        navDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                sections[index].scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Update active navigation dot on scroll
+        let ticking = false;
+        
+        function updateNavDots() {
+            const scrollPosition = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop - windowHeight / 2 && 
+                    scrollPosition < sectionTop + sectionHeight - windowHeight / 2) {
+                    navDots.forEach(dot => dot.classList.remove('active'));
+                    if (navDots[index]) {
+                        navDots[index].classList.add('active');
+                    }
+                }
+            });
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateNavDots);
+                ticking = true;
+            }
+        });
+
+        // Resize handler with debounce
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }, 250);
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all fade-in elements
+        document.querySelectorAll('.fade-in').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Prevent zoom on double tap for iOS
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
 </body>
 </html>
