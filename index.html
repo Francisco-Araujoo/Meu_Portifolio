@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Francisco Araújo - Desenvolvedor Full Stack</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,14 +18,161 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #fafafa;
-            color: #1a1a1a;
-            overflow-x: hidden;
-            line-height: 1.6;
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --text-dark: #1a202c;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --bg-white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-accent: linear-gradient(135deg, var(--accent-color), var(--primary-color));
         }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--gradient-primary);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Cursor personalizado */
+        body {
+            cursor: none;
+        }
+
+        #custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+
+        #custom-cursor.hover {
+            transform: scale(2);
+        }
+
+        /* Navbar moderna */
+        .navbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 10px 30px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .navbar ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .navbar.scrolled a {
+            color: var(--text-dark);
+        }
+
+        .navbar a:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .navbar.scrolled a:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-accent);
+            transition: width 0.3s ease;
+        }
+
+        .navbar a:hover::after {
+            width: 100%;
+        }
+
+        /* Canvas 3D */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -29,7 +180,7 @@
             width: 100%;
             height: 100vh;
             z-index: 1;
-            opacity: 0.15;
+            opacity: 0.4;
         }
 
         .content {
@@ -44,26 +195,69 @@
             align-items: center;
             justify-content: center;
             padding: 4rem 2rem;
+            position: relative;
         }
 
+        /* Hero Section aprimorada */
         .hero {
             text-align: center;
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            background: var(--gradient-primary);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
             margin-bottom: 1rem;
-            color: #1a1a1a;
             letter-spacing: -0.02em;
+            opacity: 0;
+            transform: translateY(50px);
         }
 
-        .hero h2 {
-            font-size: 1.25rem;
-            color: #6b7280;
+        .hero .subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
             margin-bottom: 3rem;
+            opacity: 0.9;
             font-weight: 400;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .typing-text {
+            display: inline-block;
+            border-right: 2px solid white;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            50% {
+                border-color: transparent;
+            }
+
+            51%,
+            100% {
+                border-color: white;
+            }
         }
 
         .contact-info {
@@ -72,271 +266,321 @@
             justify-content: center;
             flex-wrap: wrap;
             margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
         }
 
         .contact-item {
-            padding: 0.75rem 1.5rem;
-            background: #ffffff;
-            border-radius: 8px;
-            border: 1px solid #e5e7eb;
-            transition: all 0.2s ease;
-            color: #4b5563;
-            font-weight: 500;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: white;
             text-decoration: none;
-            display: inline-block;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            min-width: fit-content;
         }
 
         .contact-item:hover {
-            background: #f9fafb;
-            border-color: #d1d5db;
-            transform: translateY(-1px);
-            color: #1a1a1a;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
         }
 
         .section-content {
-            max-width: 1000px;
+            max-width: 1200px;
             width: 100%;
+            position: relative;
         }
 
         .section h2 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 5vw, 3rem);
             margin-bottom: 3rem;
             text-align: center;
-            color: #1a1a1a;
-            font-weight: 600;
+            font-weight: 800;
             letter-spacing: -0.02em;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        .about-text {
-            font-size: 1.125rem;
-            line-height: 1.8;
-            text-align: center;
-            color: #4b5563;
-            max-width: 700px;
-            margin: 0 auto;
-            background: #ffffff;
-            padding: 3rem;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .skills-grid {
+        /* Cards modernos */
+        .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .skill-card {
-            background: #ffffff;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            transition: all 0.2s ease;
-        }
-
-        .skill-card:hover {
-            border-color: #d1d5db;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .skill-card h3 {
-            color: #1a1a1a;
-            margin-bottom: 0.75rem;
-            font-size: 1.125rem;
-            font-weight: 600;
-        }
-
-        .skill-card p {
-            color: #6b7280;
-            font-size: 0.9rem;
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-top: 2rem;
         }
 
-        .project-card {
-            background: #ffffff;
+        .modern-card {
+            background: var(--bg-white);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .modern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .modern-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .modern-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modern-card h3 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .modern-card p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Mini-jogo: Snake */
+        .mini-game {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-white);
+            border-radius: 20px;
             padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            transition: all 0.2s ease;
+            box-shadow: var(--shadow-xl);
+            z-index: 10000;
+            display: none;
+        }
+
+        .game-trigger {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .game-trigger:hover {
+            transform: scale(1.1);
+        }
+
+        #gameCanvas {
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+        }
+
+        /* Projeto cards com hover effects */
+        .project-card {
+            background: var(--bg-white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s ease;
+            position: relative;
+            height: 100%;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+
+        .project-card:hover::before {
+            opacity: 0.1;
         }
 
         .project-card:hover {
-            border-color: #d1d5db;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-15px) rotateX(5deg);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .project-content {
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
         }
 
         .project-card h3 {
-            color: #1a1a1a;
-            margin-bottom: 0.75rem;
-            font-size: 1.25rem;
-            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 700;
         }
 
         .project-card p {
-            color: #6b7280;
+            color: var(--text-light);
             margin-bottom: 1.5rem;
-            font-size: 0.95rem;
+            line-height: 1.6;
         }
 
         .project-link {
             display: inline-flex;
             align-items: center;
-            padding: 0.5rem 1rem;
-            background: #1a1a1a;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--gradient-primary);
             color: white;
             text-decoration: none;
-            border-radius: 6px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .project-link:hover {
-            background: #374151;
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
 
-        .experience-section {
-            background: #f9fafb;
+        /* Animações de entrada */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(50px);
         }
 
-        .experience-timeline {
-            max-width: 800px;
-            margin: 0 auto;
+        .fade-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
         }
 
-        .experience-item {
-            background: #ffffff;
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            margin-bottom: 2rem;
-            position: relative;
+        .fade-in-right {
+            opacity: 0;
+            transform: translateX(50px);
         }
 
-        .experience-item h3 {
-            color: #1a1a1a;
-            margin-bottom: 0.5rem;
-            font-size: 1.25rem;
-            font-weight: 600;
+        /* Progress bars para skills */
+        .skill-progress {
+            margin-top: 1rem;
         }
 
-        .experience-item h4 {
-            color: #6b7280;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            font-weight: 500;
-        }
-
-        .experience-item p {
-            color: #4b5563;
-            margin-bottom: 1rem;
-        }
-
-        .experience-item ul {
-            padding-left: 1.5rem;
-            color: #6b7280;
-        }
-
-        .experience-item ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .nav-dots {
-            position: fixed;
-            right: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .nav-dot {
-            width: 8px;
+        .progress-bar {
+            width: 100%;
             height: 8px;
-            border-radius: 50%;
-            background: #d1d5db;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
         }
 
-        .nav-dot.active {
-            background: #1a1a1a;
-            transform: scale(1.25);
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 4px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 1.5s ease;
         }
 
-        .nav-dot:hover {
-            background: #6b7280;
-            transform: scale(1.15);
+        /* Floating elements */
+        .floating-element {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.1;
         }
 
-        .contact-section {
-            background: #f9fafb;
+        .floating-element.code {
+            font-family: 'Courier New', monospace;
+            color: var(--primary-color);
+            animation: float 6s ease-in-out infinite;
         }
 
-        .contact-card {
-            background: #ffffff;
-            padding: 3rem;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
         }
 
-        .contact-card h3 {
-            color: #1a1a1a;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .contact-card p {
-            color: #6b7280;
-            margin-bottom: 2rem;
-            font-size: 1rem;
-        }
-
-        .contact-grid {
-            display: grid;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .contact-grid .contact-item {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            padding: 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        /* Mobile Responsiveness */
+        /* Responsividade aprimorada */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
-                line-height: 1.2;
+            .navbar {
+                padding: 8px 20px;
+                top: 10px;
             }
 
-            .hero h2 {
-                font-size: 1rem;
-                margin-bottom: 2rem;
+            .navbar ul {
+                gap: 15px;
             }
 
-            .section h2 {
-                font-size: 1.75rem;
-                margin-bottom: 2rem;
+            .navbar a {
+                font-size: 0.8rem;
             }
 
             .section {
@@ -344,208 +588,474 @@
                 min-height: auto;
             }
 
-            .nav-dots {
-                display: none;
-            }
-
-            .contact-info {
-                flex-direction: column;
-                align-items: center;
-                gap: 0.75rem;
-            }
-
-            .contact-item {
-                width: 100%;
-                max-width: 280px;
-                text-align: center;
-                padding: 1rem;
-                font-size: 0.9rem;
-            }
-
-            .about-text {
-                padding: 1.5rem;
-                font-size: 1rem;
-            }
-
-            .skills-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .skill-card {
-                padding: 1.5rem;
-            }
-
-            .projects-grid {
+            .card-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
             }
 
-            .project-card {
+            .modern-card {
                 padding: 1.5rem;
             }
 
-            .experience-item {
-                padding: 1.5rem;
+            .game-trigger {
+                bottom: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
             }
 
-            .contact-card {
-                padding: 2rem 1.5rem;
-            }
-
-            .contact-grid {
+            .contact-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
                 gap: 0.75rem;
+                align-items: center;
+                justify-items: center;
+                max-width: 400px;
+                margin: 3rem auto 0;
+            }
+
+            .contact-item {
+                width: 100%;
+                max-width: none;
+                justify-content: center;
+                padding: 12px 16px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar ul {
+                gap: 8px;
+            }
+
+            .navbar a {
+                font-size: 0.75rem;
+                padding: 4px 8px;
             }
         }
 
         @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 1.75rem;
+            .hero {
+                padding: 2rem 1rem;
             }
 
             .section {
-                padding: 1.5rem 0.75rem;
+                padding: 1.5rem 1rem;
+            }
+
+            .navbar {
+                padding: 6px 15px;
+                top: 10px;
+            }
+
+            .navbar ul {
+                gap: 6px;
+            }
+
+            .navbar a {
+                font-size: 0.7rem;
+                padding: 3px 6px;
+            }
+
+            .contact-info {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                max-width: 280px;
             }
 
             .contact-item {
-                padding: 0.875rem;
-                font-size: 0.85rem;
+                padding: 14px 20px;
+                font-size: 0.9rem;
             }
 
-            .about-text {
-                padding: 1.25rem;
-                font-size: 0.95rem;
-            }
-
-            .skill-card,
-            .project-card,
-            .experience-item {
+            .modern-card,
+            .project-content {
                 padding: 1.25rem;
             }
 
-            .contact-card {
-                padding: 1.5rem 1rem;
+            .mini-game {
+                padding: 1rem;
+                width: 90%;
+                max-width: 300px;
             }
         }
 
-        /* Smooth animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+        /* Tema escuro (opcional) */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-dark: #f7fafc;
+                --text-light: #a0aec0;
+                --bg-light: #1a202c;
+                --bg-white: #2d3748;
+            }
         }
 
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+        /* Contact Cards - Nova seção de contato */
+        .contact-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
-        /* Improved button styles for mobile */
-        .contact-item {
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
+        .contact-card-item {
+            background: var(--bg-white);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 160px;
         }
 
-        .project-link {
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
+        .contact-card-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .contact-card-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .contact-card-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-color);
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .contact-icon.whatsapp {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+        }
+
+        .contact-icon.email {
+            background: linear-gradient(135deg, #ea4335, #d33b2c);
+        }
+
+        .contact-icon.github {
+            background: linear-gradient(135deg, #333, #24292e);
+        }
+
+        .contact-icon.linkedin {
+            background: linear-gradient(135deg, #0077b5, #005582);
+        }
+
+        .contact-card-item:hover .contact-icon {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-info-text {
+            text-align: center;
+        }
+
+        .contact-info-text h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .contact-info-text p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 500;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        /* Responsividade dos contact cards */
+        @media (max-width: 768px) {
+            .contact-cards-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .contact-card-item {
+                padding: 2rem 1.5rem;
+                min-height: 140px;
+            }
+
+            .contact-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .contact-info-text h4 {
+                font-size: 1.1rem;
+            }
+
+            .contact-info-text p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contact-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .contact-card-item {
+                padding: 1.75rem 1.25rem;
+                min-height: 130px;
+            }
+
+            .contact-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Animações de performance */
+        * {
+            will-change: auto;
+        }
+
+        .modern-card,
+        .project-card {
+            will-change: transform;
+        }
+
+        /* Smooth scrolling melhorado */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Carregando Portfólio...</div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+
+    <!-- Modern Navbar -->
+    <nav class="navbar" id="navbar">
+        <ul>
+            <li><a href="#home" data-section="0">Início</a></li>
+            <li><a href="#about" data-section="1">Sobre</a></li>
+            <li><a href="#skills" data-section="2">Skills</a></li>
+            <li><a href="#experience" data-section="3">Experiência</a></li>
+            <li><a href="#projects" data-section="4">Projetos</a></li>
+            <li><a href="#contact" data-section="5">Contato</a></li>
+        </ul>
+    </nav>
+
+    <!-- Game Trigger -->
+    <div class="game-trigger" onclick="toggleGame()">
+        <i class="fas fa-gamepad"></i>
+    </div>
+
+    <!-- Mini Game -->
+    <div class="mini-game" id="miniGame">
+        <h3>Snake Game - Use WASD ou setas</h3>
+        <canvas id="gameCanvas" width="300" height="300"></canvas>
+        <button onclick="toggleGame()"
+            style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--gradient-primary); color: white; border: none; border-radius: 5px; cursor: pointer;">Fechar</button>
+    </div>
+
     <div id="canvas-container"></div>
 
     <div class="content">
         <!-- Hero Section -->
-        <section class="section hero" data-section="0">
+        <section class="section hero" id="home" data-section="0">
             <div class="section-content">
-                <h1>Francisco Cauã Kennedy<br>Araújo Bezerra</h1>
-                <h2>Desenvolvedor Full Stack | Engenharia de Software</h2>
-                <div class="contact-info">
-                    <a href="https://wa.me/5543988331584" class="contact-item" target="_blank">📱 WhatsApp</a>
-                    <a href="mailto:franciscoaraujodev@gmail.com" class="contact-item">✉️ Email</a>
-                    <a href="https://github.com/Francisco-Araujoo" class="contact-item" target="_blank">🔗 GitHub</a>
-                    <a href="https://www.linkedin.com/in/francisco-araujo-873754314/" class="contact-item"
-                        target="_blank">💼 LinkedIn</a>
+                <div class="hero-content">
+                    <h1 class="fade-in-up">Francisco Cauã Kennedy<br>Araújo Bezerra</h1>
+                    <div class="subtitle fade-in-up">
+                        <span class="typing-text" id="typed-text">Desenvolvedor Full Stack</span>
+                        <span> | Engenharia de Software</span>
+                    </div>
+                    <div class="contact-info fade-in-up">
+                        <a href="https://wa.me/5543988331584" class="contact-item" target="_blank">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                        <a href="mailto:franciscoaraujodev@gmail.com" class="contact-item">
+                            <i class="fas fa-envelope"></i> Email
+                        </a>
+                        <a href="https://github.com/Francisco-Araujoo" class="contact-item" target="_blank">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://www.linkedin.com/in/francisco-araujo-873754314/" class="contact-item"
+                            target="_blank">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                    </div>
+                </div>
+                <div class="scroll-indicator">
+                    <i class="fas fa-chevron-down"></i>
+                    <div>Role para baixo</div>
                 </div>
             </div>
+
+            <!-- Floating Elements -->
+            <div class="floating-element code" style="top: 15%; left: 10%; animation-delay: 0s;">&lt;/&gt;</div>
+            <div class="floating-element code" style="top: 25%; right: 15%; animation-delay: 2s;">{ }</div>
+            <div class="floating-element code" style="bottom: 30%; left: 20%; animation-delay: 4s;">React</div>
+            <div class="floating-element code" style="bottom: 20%; right: 10%; animation-delay: 1s;">Node.js</div>
         </section>
 
         <!-- About Section -->
-        <section class="section" data-section="1">
+        <section class="section" id="about" data-section="1">
             <div class="section-content">
-                <h2>Sobre Mim</h2>
-                <div class="about-text fade-in">
+                <h2 class="fade-in-up">Sobre Mim</h2>
+                <div class="modern-card fade-in-up" style="max-width: 800px; margin: 0 auto;">
+                    <h3>Desenvolvedor Full Stack Apaixonado por Tecnologia</h3>
                     <p>
                         Desenvolvedor Full Stack, atualmente cursando
                         <strong>Engenharia de Software</strong> na Anhanguera (4º Semestre).
                         Tenho total disposição e tempo para aprender e contribuir com equipes,
                         com foco em crescimento profissional e desenvolvimento de soluções inovadoras.
                     </p>
+                    <p style="margin-top: 1rem;">
+                        Especializado em tecnologias modernas como React, Node.js, TypeScript e AWS,
+                        sempre buscando as melhores práticas e soluções eficientes para cada projeto.
+                    </p>
                 </div>
             </div>
         </section>
 
         <!-- Skills Section -->
-        <section class="section" data-section="2">
+        <section class="section" id="skills" data-section="2">
             <div class="section-content">
-                <h2>Habilidades Técnicas</h2>
-                <div class="skills-grid">
-                    <div class="skill-card fade-in">
-                        <h3>Frontend</h3>
+                <h2 class="fade-in-up">Habilidades Técnicas</h2>
+                <div class="card-grid">
+                    <div class="modern-card fade-in-left">
+                        <h3><i class="fab fa-html5" style="color: #e34c26;"></i> Frontend</h3>
                         <p>HTML5, CSS3, JavaScript, TypeScript, React, Next.js, Vite, Desenvolvimento responsivo e
                             interfaces modernas</p>
+                        <div class="skill-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="90%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <h3>Backend</h3>
+                    <div class="modern-card fade-in-up">
+                        <h3><i class="fas fa-server" style="color: #339933;"></i> Backend</h3>
                         <p>Node.js, Express.js, APIs RESTful, Serverless Framework</p>
+                        <div class="skill-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="85%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <h3>Frameworks & Libraries</h3>
+                    <div class="modern-card fade-in-right">
+                        <h3><i class="fab fa-react" style="color: #61dafb;"></i> Frameworks & Libraries</h3>
                         <p>React.js, Next.js, Vite, TypeScript, Desenvolvimento de SPAs e aplicações modernas</p>
+                        <div class="skill-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="88%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <h3>Banco de Dados</h3>
+                    <div class="modern-card fade-in-left">
+                        <h3><i class="fas fa-database" style="color: #4479a1;"></i> Banco de Dados</h3>
                         <p>MySQL, Gerenciamento e otimização de bases de dados</p>
+                        <div class="skill-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="80%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <h3>Cloud & DevOps</h3>
+                    <div class="modern-card fade-in-up">
+                        <h3><i class="fab fa-aws" style="color: #ff9900;"></i> Cloud & DevOps</h3>
                         <p>AWS, Serverless Framework, Infraestrutura em nuvem, Netlify</p>
+                        <div class="skill-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="75%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <h3>Java Ecosystem</h3>
+                    <div class="modern-card fade-in-right">
+                        <h3><i class="fab fa-java" style="color: #ed8b00;"></i> Java Ecosystem</h3>
                         <p>Java (Intermediário), Spring Boot (Básico), Hibernate (Básico), Maven</p>
+                        <div class="skill-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="70%"></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="skill-card fade-in">
-                        <h3>Ferramentas</h3>
+                    <div class="modern-card fade-in-left">
+                        <h3><i class="fas fa-tools" style="color: #6c757d;"></i> Ferramentas</h3>
                         <p>Git/GitHub, Postman, Testes de API, Inglês Intermediário</p>
+                        <div class="skill-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" data-width="85%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Experience Section -->
-        <section class="section experience-section" data-section="3">
+        <section class="section experience-section" id="experience" data-section="3"
+            style="background: var(--bg-light);">
             <div class="section-content">
-                <h2>Experiência Profissional</h2>
-                <div class="experience-timeline">
-                    <div class="experience-item fade-in">
-                        <h3>Desenvolvedor Full Stack</h3>
-                        <h4>Múltiplas Empresas - Atual</h4>
+                <h2 class="fade-in-up">Experiência Profissional</h2>
+                <div class="experience-timeline" style="max-width: 900px; margin: 0 auto;">
+                    <div class="modern-card fade-in-left" style="margin-bottom: 2rem;">
+                        <h3><i class="fas fa-code" style="color: var(--primary-color);"></i> Desenvolvedor Full Stack
+                        </h3>
+                        <h4 style="color: var(--text-light); margin-bottom: 1rem;">Múltiplas Empresas - Atual</h4>
                         <p><strong>Empresas:</strong> Abra Energia, Abra Standard, Respira Sustentabilidade, Vem Ganhar
                         </p>
-                        <ul>
-                            <li>Desenvolvimento completo das plataformas das empresas (Front-End e Back-End)</li>
-                            <li>Integração com APIs e testes utilizando Postman</li>
-                            <li>Utilização de Node.js, Express, MySQL, Serverless Framework e AWS</li>
-                            <li>Gerenciamento de banco de dados e infraestrutura em nuvem</li>
+                        <ul style="margin-top: 1rem; color: var(--text-light);">
+                            <li>🚀 Desenvolvimento completo das plataformas das empresas (Front-End e Back-End)</li>
+                            <li>🔗 Integração com APIs e testes utilizando Postman</li>
+                            <li>⚡ Utilização de Node.js, Express, MySQL, Serverless Framework e AWS</li>
+                            <li>☁️ Gerenciamento de banco de dados e infraestrutura em nuvem</li>
                         </ul>
                     </div>
-                    <div class="experience-item fade-in">
-                        <h3>Colaborador em Projetos</h3>
-                        <h4>Evolve Tech Solutions</h4>
-                        <p>Apoio no desenvolvimento de soluções web e integrações com APIs, com foco em crescimento
+                    <div class="modern-card fade-in-right">
+                        <h3><i class="fas fa-handshake" style="color: var(--secondary-color);"></i> Colaborador em
+                            Projetos</h3>
+                        <h4 style="color: var(--text-light); margin-bottom: 1rem;">Evolve Tech Solutions</h4>
+                        <p>💼 Apoio no desenvolvimento de soluções web e integrações com APIs, com foco em crescimento
                             profissional dentro da empresa.</p>
                     </div>
                 </div>
@@ -553,83 +1063,131 @@
         </section>
 
         <!-- Projects Section -->
-        <section class="section" data-section="4">
+        <section class="section" id="projects" data-section="4">
             <div class="section-content">
-                <h2>Projetos Desenvolvidos</h2>
-                <div class="projects-grid">
-                    <div class="project-card fade-in">
-                        <h3>Martech</h3>
-                        <p>Plataforma de marketing digital desenvolvida com React. Interface moderna e responsiva com
-                            foco na experiência do usuário.</p>
-                        <a href="https://martechh.netlify.app/" class="project-link" target="_blank">Visitar Site →</a>
+                <h2 class="fade-in-up">Projetos Desenvolvidos</h2>
+                <div class="card-grid">
+                    <div class="project-card fade-in-up">
+                        <div class="project-content">
+                            <h3><i class="fab fa-react" style="color: #61dafb;"></i> Martech</h3>
+                            <p>Plataforma de marketing digital desenvolvida com React. Interface moderna e responsiva
+                                com foco na experiência do usuário.</p>
+                            <a href="https://martechh.netlify.app/" class="project-link" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Visitar Site
+                            </a>
+                        </div>
                     </div>
-                    <div class="project-card fade-in">
-                        <h3>Artend</h3>
-                        <p>Aplicação web desenvolvida com React para gestão artística. Sistema completo com interface
-                            intuitiva e design moderno.</p>
-                        <a href="https://martechh.netlify.app/" class="project-link" target="_blank">Visitar Site →</a>
+                    <div class="project-card fade-in-up">
+                        <div class="project-content">
+                            <h3><i class="fas fa-palette" style="color: #ff6b6b;"></i> Artend</h3>
+                            <p>Aplicação web desenvolvida com React para gestão artística. Sistema completo com
+                                interface intuitiva e design moderno.</p>
+                            <a href="https://martechh.netlify.app/" class="project-link" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Visitar Site
+                            </a>
+                        </div>
                     </div>
-                    <div class="project-card fade-in">
-                        <h3>AgilizaMed</h3>
-                        <p>Sistema de gestão médica desenvolvido com tecnologias puras (HTML, CSS, JS) e backend
-                            Node.js. Utiliza AWS para hospedagem do banco MySQL e arquitetura serverless.</p>
-                        <a href="https://agilizamedd.netlify.app/" class="project-link" target="_blank">Visitar Site
-                            →</a>
+                    <div class="project-card fade-in-up">
+                        <div class="project-content">
+                            <h3><i class="fas fa-heartbeat" style="color: #e74c3c;"></i> AgilizaMed</h3>
+                            <p>Sistema de gestão médica desenvolvido com tecnologias puras (HTML, CSS, JS) e backend
+                                Node.js. Utiliza AWS para hospedagem do banco MySQL e arquitetura serverless.</p>
+                            <a href="https://agilizamedd.netlify.app/" class="project-link" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Visitar Site
+                            </a>
+                        </div>
                     </div>
-                    <div class="project-card fade-in">
-                        <h3>Respira Sustentabilidade</h3>
-                        <p>Plataforma focada em sustentabilidade e soluções ambientais. Desenvolvimento completo com
-                            integração de APIs e interface moderna.</p>
-                        <a href="https://respirasustentabilidade.com.br/" class="project-link" target="_blank">Visitar
-                            Site →</a>
+                    <div class="project-card fade-in-up">
+                        <div class="project-content">
+                            <h3><i class="fas fa-leaf" style="color: #27ae60;"></i> Respira Sustentabilidade</h3>
+                            <p>Plataforma focada em sustentabilidade e soluções ambientais. Desenvolvimento completo com
+                                integração de APIs e interface moderna.</p>
+                            <a href="https://respirasustentabilidade.com.br/" class="project-link" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Visitar Site
+                            </a>
+                        </div>
                     </div>
-                    <div class="project-card fade-in">
-                        <h3>Abra Standard</h3>
-                        <p>Plataforma de padronização e qualidade. Sistema completo com backend robusto e frontend
-                            responsivo.</p>
-                        <a href="https://abrastandard.org/" class="project-link" target="_blank">Visitar Site →</a>
+                    <div class="project-card fade-in-up">
+                        <div class="project-content">
+                            <h3><i class="fas fa-award" style="color: #f39c12;"></i> Abra Standard</h3>
+                            <p>Plataforma de padronização e qualidade. Sistema completo com backend robusto e frontend
+                                responsivo.</p>
+                            <a href="https://abrastandard.org/" class="project-link" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Visitar Site
+                            </a>
+                        </div>
                     </div>
-                    <div class="project-card fade-in">
-                        <h3>Abra Energia</h3>
-                        <p>Sistema de gestão energética com funcionalidades avançadas. Desenvolvido com Node.js e AWS.
-                        </p>
-                        <a href="https://www.abraenergia.com.br/" class="project-link" target="_blank">Visitar Site
-                            →</a>
+                    <div class="project-card fade-in-up">
+                        <div class="project-content">
+                            <h3><i class="fas fa-bolt" style="color: #e67e22;"></i> Abra Energia</h3>
+                            <p>Sistema de gestão energética com funcionalidades avançadas. Desenvolvido com Node.js e
+                                AWS.</p>
+                            <a href="https://www.abraenergia.com.br/" class="project-link" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Visitar Site
+                            </a>
+                        </div>
                     </div>
-                    <div class="project-card fade-in">
-                        <h3>Evolve Tech Solutions</h3>
-                        <p>Portal corporativo da empresa de tecnologia. Interface moderna com foco na experiência do
-                            usuário.</p>
-                        <a href="https://www.evolvetechsolutions.com.br/" class="project-link" target="_blank">Visitar
-                            Site →</a>
+                    <div class="project-card fade-in-up">
+                        <div class="project-content">
+                            <h3><i class="fas fa-rocket" style="color: #9b59b6;"></i> Evolve Tech Solutions</h3>
+                            <p>Portal corporativo da empresa de tecnologia. Interface moderna com foco na experiência do
+                                usuário.</p>
+                            <a href="https://www.evolvetechsolutions.com.br/" class="project-link" target="_blank">
+                                <i class="fas fa-external-link-alt"></i> Visitar Site
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Contact Section -->
-        <section class="section contact-section" data-section="5">
+        <section class="section contact-section" id="contact" data-section="5" style="background: var(--bg-light);">
             <div class="section-content">
-                <h2>Vamos Trabalhar Juntos?</h2>
-                <div class="contact-card fade-in">
-                    <h3>Entre em Contato</h3>
-                    <p>
+                <h2 class="fade-in-up">Vamos Trabalhar Juntos?</h2>
+                <div class="modern-card fade-in-up" style="max-width: 900px; margin: 0 auto; text-align: center;">
+                    <h3><i class="fas fa-handshake" style="color: var(--primary-color);"></i> Entre em Contato</h3>
+                    <p style="margin-bottom: 3rem; font-size: 1.1rem; line-height: 1.6;">
                         Estou sempre aberto a novas oportunidades e desafios.
                         Tenho total interesse em aprender e crescer junto à sua empresa!
                     </p>
-                    <div class="contact-grid">
-                        <a href="https://wa.me/5543988331584" class="contact-item" target="_blank">
-                            <strong>WhatsApp:</strong> (43) 98833-1584
+                    <div class="contact-cards-grid">
+                        <a href="https://wa.me/5543988331584" class="contact-card-item" target="_blank">
+                            <div class="contact-icon whatsapp">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="contact-info-text">
+                                <h4>WhatsApp</h4>
+                                <p>(43) 98833-1584</p>
+                            </div>
                         </a>
-                        <a href="mailto:franciscoaraujodev@gmail.com" class="contact-item">
-                            <strong>Email:</strong> franciscoaraujodev@gmail.com
+                        <a href="mailto:franciscoaraujodev@gmail.com" class="contact-card-item">
+                            <div class="contact-icon email">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-info-text">
+                                <h4>Email</h4>
+                                <p>franciscoaraujodev@gmail.com</p>
+                            </div>
                         </a>
-                        <a href="https://github.com/Francisco-Araujoo" class="contact-item" target="_blank">
-                            <strong>GitHub:</strong> Francisco-Araujoo
+                        <a href="https://github.com/Francisco-Araujoo" class="contact-card-item" target="_blank">
+                            <div class="contact-icon github">
+                                <i class="fab fa-github"></i>
+                            </div>
+                            <div class="contact-info-text">
+                                <h4>GitHub</h4>
+                                <p>Francisco-Araujoo</p>
+                            </div>
                         </a>
-                        <a href="https://www.linkedin.com/in/francisco-araujo-873754314/" class="contact-item"
+                        <a href="https://www.linkedin.com/in/francisco-araujo-873754314/" class="contact-card-item"
                             target="_blank">
-                            <strong>LinkedIn:</strong> Francisco Araújo
+                            <div class="contact-icon linkedin">
+                                <i class="fab fa-linkedin"></i>
+                            </div>
+                            <div class="contact-info-text">
+                                <h4>LinkedIn</h4>
+                                <p>Francisco Araújo</p>
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -638,7 +1196,7 @@
     </div>
 
     <!-- Navigation Dots -->
-    <div class="nav-dots">
+    <div class="nav-dots" style="display: none;">
         <div class="nav-dot active" data-section="0"></div>
         <div class="nav-dot" data-section="1"></div>
         <div class="nav-dot" data-section="2"></div>
@@ -648,115 +1206,504 @@
     </div>
 
     <script>
-        // Three.js Scene Setup (Simplified)
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
 
-        // Simple particles
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = window.innerWidth > 768 ? 100 : 50; // Menos partículas no mobile
-        const posArray = new Float32Array(particlesCount * 3);
-
-        for (let i = 0; i < particlesCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 50;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-        const particlesMaterial = new THREE.PointsMaterial({
-            size: 0.8,
-            color: 10,
-            transparent: true,
-            opacity: 0.4
-        });
-
-        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particlesMesh);
-
-        camera.position.z = 30;
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            particlesMesh.rotation.x += 0.0005;
-            particlesMesh.rotation.y += 0.001;
-            renderer.render(scene, camera);
-        }
-
-        animate();
-
-        // Smooth scrolling for navigation
-        const navDots = document.querySelectorAll('.nav-dot');
-        const sections = document.querySelectorAll('.section');
-
-        navDots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                sections[index].scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // Update active navigation dot on scroll
-        let ticking = false;
-
-        function updateNavDots() {
-            const scrollPosition = window.scrollY;
-            const windowHeight = window.innerHeight;
-
-            sections.forEach((section, index) => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.offsetHeight;
-
-                if (scrollPosition >= sectionTop - windowHeight / 2 &&
-                    scrollPosition < sectionTop + sectionHeight - windowHeight / 2) {
-                    navDots.forEach(dot => dot.classList.remove('active'));
-                    if (navDots[index]) {
-                        navDots[index].classList.add('active');
-                    }
+        // Loading screen
+        window.addEventListener('load', () => {
+            gsap.to('#loading-screen', {
+                opacity: 0,
+                duration: 0.5,
+                delay: 1,
+                onComplete: () => {
+                    document.getElementById('loading-screen').style.display = 'none';
+                    initAnimations();
                 }
             });
-            ticking = false;
-        }
-
-        window.addEventListener('scroll', () => {
-            if (!ticking) {
-                requestAnimationFrame(updateNavDots);
-                ticking = true;
-            }
         });
 
-        // Resize handler with debounce
-        let resizeTimeout;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
+        // Custom cursor
+        const cursor = document.getElementById('custom-cursor');
+        let cursorX = 0;
+        let cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            cursorX = e.clientX;
+            cursorY = e.clientY;
+            gsap.to(cursor, { x: cursorX, y: cursorY, duration: 0.1 });
+        });
+
+        document.addEventListener('mouseenter', () => {
+            cursor.style.opacity = '1';
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = '0';
+        });
+
+        // Hover effects for cursor
+        document.querySelectorAll('a, button, .project-card, .modern-card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Typing animation
+        function typeText() {
+            const texts = [
+                'Desenvolvedor Full Stack',
+                'Especialista em React',
+                'Desenvolvedor Node.js',
+                'Entusiasta de AWS'
+            ];
+            let textIndex = 0;
+            let charIndex = 0;
+            const typedElement = document.getElementById('typed-text');
+
+            function type() {
+                if (charIndex < texts[textIndex].length) {
+                    typedElement.textContent += texts[textIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, 100);
+                } else {
+                    setTimeout(erase, 2000);
+                }
+            }
+
+            function erase() {
+                if (charIndex > 0) {
+                    typedElement.textContent = texts[textIndex].substring(0, charIndex - 1);
+                    charIndex--;
+                    setTimeout(erase, 50);
+                } else {
+                    textIndex = (textIndex + 1) % texts.length;
+                    setTimeout(type, 500);
+                }
+            }
+
+            type();
+        }
+
+        // Three.js Enhanced Scene
+        function initThreeJS() {
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Enhanced particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = window.innerWidth > 768 ? 200 : 100;
+            const posArray = new Float32Array(particlesCount * 3);
+            const colorsArray = new Float32Array(particlesCount * 3);
+
+            for (let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 100;
+                colorsArray[i] = Math.random();
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+
+            // Geometric shapes
+            const geometries = [
+                new THREE.BoxGeometry(1, 1, 1),
+                new THREE.SphereGeometry(0.5, 32, 32),
+                new THREE.ConeGeometry(0.5, 1, 32)
+            ];
+
+            const materials = geometries.map(() => new THREE.MeshBasicMaterial({
+                color: new THREE.Color(Math.random(), Math.random(), Math.random()),
+                transparent: true,
+                opacity: 0.1,
+                wireframe: true
+            }));
+
+            const meshes = [];
+            for (let i = 0; i < 5; i++) {
+                const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+                const material = materials[Math.floor(Math.random() * materials.length)];
+                const mesh = new THREE.Mesh(geometry, material);
+
+                mesh.position.set(
+                    (Math.random() - 0.5) * 50,
+                    (Math.random() - 0.5) * 50,
+                    (Math.random() - 0.5) * 50
+                );
+
+                meshes.push(mesh);
+                scene.add(mesh);
+            }
+
+            camera.position.z = 30;
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                particlesMesh.rotation.x += 0.001;
+                particlesMesh.rotation.y += 0.002;
+
+                meshes.forEach((mesh, index) => {
+                    mesh.rotation.x += 0.01 * (index + 1);
+                    mesh.rotation.y += 0.01 * (index + 1);
+                });
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Resize handler
+            window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
-            }, 250);
-        });
+            });
+        }
 
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+        // Snake Game
+        let gameActive = false;
+        let snake = [{ x: 150, y: 150 }];
+        let food = { x: 90, y: 90 };
+        let direction = { x: 0, y: 0 };
+        let score = 0;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+        function toggleGame() {
+            const game = document.getElementById('miniGame');
+            gameActive = !gameActive;
+
+            if (gameActive) {
+                game.style.display = 'block';
+                initSnakeGame();
+            } else {
+                game.style.display = 'none';
+                resetGame();
+            }
+        }
+
+        function initSnakeGame() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+
+            function gameLoop() {
+                if (!gameActive) return;
+
+                // Move snake
+                const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+                snake.unshift(head);
+
+                // Check food collision
+                if (head.x === food.x && head.y === food.y) {
+                    score += 10;
+                    generateFood();
+                } else {
+                    snake.pop();
+                }
+
+                // Check wall collision
+                if (head.x < 0 || head.x >= 300 || head.y < 0 || head.y >= 300) {
+                    gameOver();
+                    return;
+                }
+
+                // Check self collision
+                for (let i = 1; i < snake.length; i++) {
+                    if (head.x === snake[i].x && head.y === snake[i].y) {
+                        gameOver();
+                        return;
+                    }
+                }
+
+                draw();
+                setTimeout(gameLoop, 100);
+            }
+
+            function draw() {
+                ctx.fillStyle = '#1a202c';
+                ctx.fillRect(0, 0, 300, 300);
+
+                // Draw snake
+                ctx.fillStyle = '#667eea';
+                snake.forEach(segment => {
+                    ctx.fillRect(segment.x, segment.y, 10, 10);
+                });
+
+                // Draw food
+                ctx.fillStyle = '#f093fb';
+                ctx.fillRect(food.x, food.y, 10, 10);
+
+                // Draw score
+                ctx.fillStyle = 'white';
+                ctx.font = '16px Inter';
+                ctx.fillText(`Score: ${score}`, 10, 20);
+            }
+
+            function generateFood() {
+                food = {
+                    x: Math.floor(Math.random() * 30) * 10,
+                    y: Math.floor(Math.random() * 30) * 10
+                };
+            }
+
+            function gameOver() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                ctx.fillRect(0, 0, 300, 300);
+                ctx.fillStyle = 'white';
+                ctx.font = '20px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Game Over!', 150, 140);
+                ctx.fillText(`Score: ${score}`, 150, 170);
+                ctx.fillText('Pressione R para reiniciar', 150, 200);
+
+                document.addEventListener('keydown', function restartHandler(e) {
+                    if (e.key === 'r' || e.key === 'R') {
+                        resetGame();
+                        initSnakeGame();
+                        document.removeEventListener('keydown', restartHandler);
+                    }
+                });
+            }
+
+            // Controls
+            document.addEventListener('keydown', (e) => {
+                if (!gameActive) return;
+
+                switch (e.key) {
+                    case 'ArrowUp':
+                    case 'w':
+                    case 'W':
+                        if (direction.y === 0) direction = { x: 0, y: -10 };
+                        break;
+                    case 'ArrowDown':
+                    case 's':
+                    case 'S':
+                        if (direction.y === 0) direction = { x: 0, y: 10 };
+                        break;
+                    case 'ArrowLeft':
+                    case 'a':
+                    case 'A':
+                        if (direction.x === 0) direction = { x: -10, y: 0 };
+                        break;
+                    case 'ArrowRight':
+                    case 'd':
+                    case 'D':
+                        if (direction.x === 0) direction = { x: 10, y: 0 };
+                        break;
                 }
             });
-        }, observerOptions);
 
-        // Observe all fade-in elements
-        document.querySelectorAll('.fade-in').forEach(element => {
-            observer.observe(element);
+            generateFood();
+            gameLoop();
+        }
+
+        function resetGame() {
+            snake = [{ x: 150, y: 150 }];
+            direction = { x: 0, y: 0 };
+            score = 0;
+        }
+
+        // Smooth scrolling navigation
+        function initNavigation() {
+            const navLinks = document.querySelectorAll('.navbar a');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = link.getAttribute('href');
+                    const section = document.querySelector(sectionId);
+
+                    if (section) {
+                        gsap.to(window, {
+                            duration: 1,
+                            scrollTo: section,
+                            ease: "power2.inOut"
+                        });
+                    }
+                });
+            });
+
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        }
+
+        // Initialize animations
+        function initAnimations() {
+            // Hero animations
+            gsap.timeline()
+                .to('.hero h1', { opacity: 1, y: 0, duration: 1, ease: "power3.out" })
+                .to('.hero .subtitle', { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, '-=0.5')
+                .to('.hero .contact-info', { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, '-=0.5');
+
+            // Scroll triggered animations
+            gsap.utils.toArray('.fade-in-up').forEach(element => {
+                gsap.fromTo(element,
+                    { opacity: 0, y: 50 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: element,
+                            start: "top 80%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            gsap.utils.toArray('.fade-in-left').forEach(element => {
+                gsap.fromTo(element,
+                    { opacity: 0, x: -50 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: element,
+                            start: "top 80%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            gsap.utils.toArray('.fade-in-right').forEach(element => {
+                gsap.fromTo(element,
+                    { opacity: 0, x: 50 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 1,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: element,
+                            start: "top 80%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            // Progress bars animation
+            gsap.utils.toArray('.progress-fill').forEach(bar => {
+                const width = bar.getAttribute('data-width');
+                gsap.fromTo(bar,
+                    { scaleX: 0 },
+                    {
+                        scaleX: parseInt(width) / 100,
+                        duration: 2,
+                        ease: "power2.out",
+                        scrollTrigger: {
+                            trigger: bar,
+                            start: "top 80%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            // Start typing animation
+            setTimeout(typeText, 2000);
+
+            // Initialize other components
+            initThreeJS();
+            initNavigation();
+        }
+
+        // Parallax effects
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * -0.5;
+
+            const canvas = document.getElementById('canvas-container');
+            if (canvas) {
+                canvas.style.transform = `translateY(${rate}px)`;
+            }
+        });
+
+        // Touch events for mobile
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+
+            if (Math.abs(diff) > 50) {
+                // Swipe detected
+                if (diff > 0) {
+                    // Swipe up
+                    const nextSection = document.querySelector('[data-section="1"]');
+                    if (nextSection) {
+                        gsap.to(window, {
+                            duration: 1,
+                            scrollTo: nextSection,
+                            ease: "power2.inOut"
+                        });
+                    }
+                }
+            }
+        });
+
+        // Performance optimizations
+        let ticking = false;
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateAnimations);
+                ticking = true;
+            }
+        }
+
+        function updateAnimations() {
+            // Update animations here
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', requestTick);
+
+        // Enhanced contact item hover effects
+        document.querySelectorAll('.contact-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                gsap.to(item, {
+                    scale: 1.05,
+                    duration: 0.3,
+                    ease: "power2.out",
+                    boxShadow: "0 10px 30px rgba(102, 126, 234, 0.2)"
+                });
+            });
+
+            item.addEventListener('mouseleave', () => {
+                gsap.to(item, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "power2.out",
+                    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.07)"
+                });
+            });
         });
 
         // Prevent zoom on double tap for iOS
@@ -768,6 +1715,15 @@
             }
             lastTouchEnd = now;
         }, false);
+
+        // Add loading screen removal after a maximum time
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen && loadingScreen.style.display !== 'none') {
+                loadingScreen.style.display = 'none';
+                initAnimations();
+            }
+        }, 3000);
     </script>
 </body>
 
