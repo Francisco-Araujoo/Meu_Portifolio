@@ -3,7 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Francisco Araújo - Desenvolvedor Full Stack</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -646,46 +649,239 @@
         @media (max-width: 480px) {
             .hero {
                 padding: 2rem 1rem;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .hero h1 {
+                font-size: clamp(1.8rem, 8vw, 2.5rem);
+                line-height: 1.2;
+                margin-bottom: 1rem;
+            }
+
+            .hero .subtitle {
+                font-size: clamp(1rem, 4vw, 1.2rem);
+                margin-bottom: 2rem;
             }
 
             .section {
-                padding: 1.5rem 1rem;
+                padding: 2rem 1rem;
+                min-height: auto;
+            }
+
+            .section-content {
+                padding: 0;
             }
 
             .navbar {
-                padding: 6px 15px;
                 top: 10px;
+                left: 10px;
+                right: 10px;
+                transform: none;
+                padding: 8px 16px;
+                border-radius: 25px;
             }
 
             .navbar ul {
-                gap: 6px;
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
 
             .navbar a {
-                font-size: 0.7rem;
-                padding: 3px 6px;
+                font-size: 0.8rem;
+                padding: 4px 8px;
             }
 
             .contact-info {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-                max-width: 280px;
+                flex-direction: column;
+                gap: 0.8rem;
+                margin-top: 2rem;
             }
 
             .contact-item {
-                padding: 14px 20px;
+                padding: 12px 18px;
                 font-size: 0.9rem;
+                justify-content: center;
+                min-width: 200px;
+                margin: 0 auto;
             }
 
             .modern-card,
             .project-content {
-                padding: 1.25rem;
+                padding: 1.5rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .contact-cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .contact-card-item {
+                padding: 2rem 1.5rem;
+                min-height: 140px;
+            }
+
+            .contact-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
             }
 
             .mini-game {
-                padding: 1rem;
-                width: 90%;
-                max-width: 300px;
+                left: 5px;
+                right: 5px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: calc(100% - 10px);
+                max-width: none;
+                padding: 1.5rem;
+            }
+
+            #gameCanvas {
+                width: 100%;
+                max-width: 280px;
+                height: auto;
+            }
+
+            .game-trigger {
+                bottom: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            #custom-cursor {
+                display: none;
+            }
+
+            body {
+                cursor: auto;
+            }
+        }
+
+        /* Responsividade para celulares muito pequenos */
+        @media (max-width: 360px) {
+            .hero h1 {
+                font-size: clamp(1.5rem, 9vw, 2rem);
+            }
+
+            .hero .subtitle {
+                font-size: clamp(0.9rem, 4.5vw, 1.1rem);
+            }
+
+            .section {
+                padding: 1.5rem 0.8rem;
+            }
+
+            .navbar {
+                top: 5px;
+                left: 5px;
+                right: 5px;
+                padding: 6px 12px;
+            }
+
+            .navbar ul {
+                gap: 10px;
+            }
+
+            .navbar a {
+                font-size: 0.75rem;
+                padding: 3px 6px;
+            }
+
+            .modern-card,
+            .project-content {
+                padding: 1.2rem;
+            }
+
+            .contact-card-item {
+                padding: 1.5rem 1rem;
+                min-height: 120px;
+            }
+
+            .contact-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+
+            .contact-info-text h4 {
+                font-size: 1rem;
+            }
+
+            .contact-info-text p {
+                font-size: 0.85rem;
+            }
+
+            .game-trigger {
+                width: 45px;
+                height: 45px;
+                bottom: 10px;
+                right: 10px;
+                font-size: 1.1rem;
+            }
+
+            .contact-item {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+                min-width: 180px;
+            }
+        }
+
+        /* Melhorias para touch devices */
+        @media (hover: none) and (pointer: coarse) {
+
+            .modern-card:hover,
+            .project-card:hover,
+            .contact-card-item:hover {
+                transform: none;
+            }
+
+            .modern-card:active,
+            .project-card:active,
+            .contact-card-item:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+
+            .contact-item:hover {
+                transform: none;
+            }
+
+            .contact-item:active {
+                transform: scale(0.96);
+                transition: transform 0.1s ease;
+            }
+
+            .navbar a:hover {
+                transform: none;
+            }
+
+            .navbar a:active {
+                transform: scale(0.95);
+                transition: transform 0.1s ease;
+            }
+
+            #custom-cursor {
+                display: none !important;
+            }
+
+            body * {
+                cursor: auto !important;
+            }
+
+            .game-trigger:active {
+                transform: scale(0.9);
             }
         }
 
@@ -861,11 +1057,53 @@
             scroll-behavior: smooth;
         }
 
+        /* Mobile-specific performance optimizations */
+        @media (max-width: 768px) {
+            * {
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+            }
+
+            body {
+                -webkit-overflow-scrolling: touch;
+                overscroll-behavior: contain;
+            }
+
+            .section {
+                transform: translateZ(0);
+                will-change: transform;
+            }
+
+            .modern-card,
+            .project-card,
+            .contact-card-item {
+                backface-visibility: hidden;
+                transform: translateZ(0);
+            }
+
+            .navbar {
+                backface-visibility: hidden;
+                transform: translateZ(0);
+            }
+
+            #canvas-container {
+                transform: translateZ(0);
+            }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
+            }
+
+            .typing-text::after {
+                animation: none;
+            }
+
+            .loading-spinner {
+                animation: none;
             }
         }
     </style>
@@ -1341,9 +1579,19 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // Enhanced particles
+            // Enhanced particles with mobile optimization
             const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = window.innerWidth > 768 ? 200 : 100;
+            let particlesCount;
+
+            if (window.innerWidth > 1024) {
+                particlesCount = 200; // Desktop
+            } else if (window.innerWidth > 768) {
+                particlesCount = 150; // Tablet
+            } else if (window.innerWidth > 480) {
+                particlesCount = 80;  // Mobile
+            } else {
+                particlesCount = 50;  // Small mobile
+            }
             const posArray = new Float32Array(particlesCount * 3);
             const colorsArray = new Float32Array(particlesCount * 3);
 
@@ -1414,11 +1662,21 @@
 
             animate();
 
-            // Resize handler
+            // Resize handler with mobile optimization
+            let resizeTimeout;
             window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(() => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+
+                    // Adjust pixel ratio for mobile performance
+                    const pixelRatio = window.innerWidth > 768 ?
+                        Math.min(window.devicePixelRatio, 2) :
+                        Math.min(window.devicePixelRatio, 1.5);
+                    renderer.setPixelRatio(pixelRatio);
+                }, 100);
             });
         }
 
@@ -1776,6 +2034,77 @@
             }
             lastTouchEnd = now;
         }, false);
+
+        // Mobile-specific optimizations
+        const isMobile = window.innerWidth <= 768;
+        const isSmallMobile = window.innerWidth <= 480;
+
+        if (isMobile) {
+            // Disable cursor animations on mobile
+            document.querySelectorAll('*').forEach(el => {
+                el.style.cursor = 'auto';
+            });
+
+            // Reduce animation complexity on mobile
+            if (isSmallMobile) {
+                document.documentElement.style.setProperty('--animation-duration', '0.2s');
+
+                // Disable complex hover effects
+                const style = document.createElement('style');
+                style.textContent = `
+                    .modern-card:hover, .project-card:hover, .contact-card-item:hover {
+                        transform: none !important;
+                        box-shadow: var(--shadow-md) !important;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // Optimize scroll performance
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(() => {
+                    requestAnimationFrame(() => {
+                        // Reduced scroll calculations for mobile
+                    });
+                }, 16);
+            }, { passive: true });
+
+            // Touch-friendly navigation
+            document.querySelectorAll('.navbar a').forEach(link => {
+                link.addEventListener('touchstart', function () {
+                    this.style.backgroundColor = 'rgba(255,255,255,0.1)';
+                }, { passive: true });
+
+                link.addEventListener('touchend', function () {
+                    setTimeout(() => {
+                        this.style.backgroundColor = '';
+                    }, 150);
+                }, { passive: true });
+            });
+        }
+
+        // Intersection Observer for better mobile performance
+        if ('IntersectionObserver' in window) {
+            const observerOptions = {
+                threshold: isSmallMobile ? 0.1 : 0.2,
+                rootMargin: '50px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe elements for mobile-optimized animations
+            document.querySelectorAll('.modern-card, .project-card, .contact-card-item').forEach(el => {
+                observer.observe(el);
+            });
+        }
 
         // Add loading screen removal after a maximum time
         setTimeout(() => {
