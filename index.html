@@ -648,17 +648,25 @@
 
         @media (max-width: 480px) {
             .hero {
-                padding: 2rem 1rem;
+                padding: 6rem 1rem 2rem;
                 min-height: 100vh;
                 display: flex;
-                align-items: center;
+                align-items: flex-start;
                 justify-content: center;
+                padding-top: 100px;
+            }
+
+            .hero-content {
+                margin-top: 2rem;
+                width: 100%;
+                text-align: center;
             }
 
             .hero h1 {
                 font-size: clamp(1.8rem, 8vw, 2.5rem);
                 line-height: 1.2;
                 margin-bottom: 1rem;
+                margin-top: 1rem;
             }
 
             .hero .subtitle {
@@ -676,18 +684,21 @@
             }
 
             .navbar {
-                top: 10px;
-                left: 10px;
-                right: 10px;
+                top: 5px;
+                left: 5px;
+                right: 5px;
                 transform: none;
-                padding: 8px 16px;
-                border-radius: 25px;
+                padding: 6px 12px;
+                border-radius: 20px;
+                max-height: 50px;
+                z-index: 1001;
             }
 
             .navbar ul {
-                gap: 15px;
+                gap: 12px;
                 flex-wrap: wrap;
                 justify-content: center;
+                min-height: auto;
             }
 
             .navbar a {
@@ -771,8 +782,17 @@
 
         /* Responsividade para celulares muito pequenos */
         @media (max-width: 360px) {
+            .hero {
+                padding-top: 90px;
+            }
+
+            .hero-content {
+                margin-top: 1.5rem;
+            }
+
             .hero h1 {
                 font-size: clamp(1.5rem, 9vw, 2rem);
+                margin-top: 0.5rem;
             }
 
             .hero .subtitle {
@@ -784,14 +804,16 @@
             }
 
             .navbar {
-                top: 5px;
-                left: 5px;
-                right: 5px;
-                padding: 6px 12px;
+                top: 3px;
+                left: 3px;
+                right: 3px;
+                padding: 5px 10px;
+                border-radius: 15px;
+                max-height: 45px;
             }
 
             .navbar ul {
-                gap: 10px;
+                gap: 8px;
             }
 
             .navbar a {
