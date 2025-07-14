@@ -244,7 +244,14 @@
 
         .typing-text {
             display: inline-block;
-            border-right: 2px solid white;
+            position: relative;
+        }
+
+        .typing-text::after {
+            content: '|';
+            position: absolute;
+            right: -2px;
+            color: white;
             animation: blink 1s infinite;
         }
 
@@ -908,7 +915,7 @@
                 <div class="hero-content">
                     <h1 class="fade-in-up">Francisco Cauã Kennedy<br>Araújo Bezerra</h1>
                     <div class="subtitle fade-in-up">
-                        <span class="typing-text" id="typed-text">Desenvolvedor Full Stack</span>
+                        <span class="typing-text" id="typed-text"></span>
                         <span> | Engenharia de Software</span>
                     </div>
                     <div class="contact-info fade-in-up">
@@ -1251,40 +1258,77 @@
             el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
         });
 
-        // Typing animation
+        // Typing animation melhorada
+        let typingAnimationStarted = false;
+
         function typeText() {
+            if (typingAnimationStarted) return;
+            typingAnimationStarted = true;
+
             const texts = [
                 'Desenvolvedor Full Stack',
                 'Especialista em React',
                 'Desenvolvedor Node.js',
                 'Entusiasta de AWS'
             ];
+
             let textIndex = 0;
+            let isTyping = false;
+            let isDeleting = false;
             let charIndex = 0;
             const typedElement = document.getElementById('typed-text');
 
-            function type() {
-                if (charIndex < texts[textIndex].length) {
-                    typedElement.textContent += texts[textIndex].charAt(charIndex);
-                    charIndex++;
-                    setTimeout(type, 100);
+            if (!typedElement) return;
+
+            // Limpar conteúdo inicial
+            typedElement.textContent = '';
+
+            function typeWriter() {
+                if (isTyping) return; // Evita múltiplas execuções
+
+                isTyping = true;
+                const currentText = texts[textIndex];
+
+                if (!isDeleting) {
+                    // Digitando
+                    if (charIndex < currentText.length) {
+                        typedElement.textContent = currentText.slice(0, charIndex + 1);
+                        charIndex++;
+                        setTimeout(() => {
+                            isTyping = false;
+                            typeWriter();
+                        }, 100);
+                    } else {
+                        // Texto completo, aguardar antes de apagar
+                        setTimeout(() => {
+                            isDeleting = true;
+                            isTyping = false;
+                            typeWriter();
+                        }, 2000);
+                    }
                 } else {
-                    setTimeout(erase, 2000);
+                    // Apagando
+                    if (charIndex > 0) {
+                        typedElement.textContent = currentText.slice(0, charIndex - 1);
+                        charIndex--;
+                        setTimeout(() => {
+                            isTyping = false;
+                            typeWriter();
+                        }, 50);
+                    } else {
+                        // Texto apagado, próximo texto
+                        isDeleting = false;
+                        textIndex = (textIndex + 1) % texts.length;
+                        setTimeout(() => {
+                            isTyping = false;
+                            typeWriter();
+                        }, 500);
+                    }
                 }
             }
 
-            function erase() {
-                if (charIndex > 0) {
-                    typedElement.textContent = texts[textIndex].substring(0, charIndex - 1);
-                    charIndex--;
-                    setTimeout(erase, 50);
-                } else {
-                    textIndex = (textIndex + 1) % texts.length;
-                    setTimeout(type, 500);
-                }
-            }
-
-            type();
+            // Iniciar animação
+            typeWriter();
         }
 
         // Three.js Enhanced Scene
@@ -1560,7 +1604,11 @@
         }
 
         // Initialize animations
+        let animationsInitialized = false;
+
         function initAnimations() {
+            if (animationsInitialized) return;
+            animationsInitialized = true;
             // Hero animations
             gsap.timeline()
                 .to('.hero h1', { opacity: 1, y: 0, duration: 1, ease: "power3.out" })
